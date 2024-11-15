@@ -16,10 +16,12 @@ interface DateRangePickerProps {
    days?: number;
    minDate?: string;
    maxDate?: string;
+   maxDateIsToday: boolean;
    alwaysShowCalendars?: boolean;
+   showMonthYearDropdowns?: boolean;
 }
 
-export default function DateRangePickerComponent({days, minDate, maxDate, alwaysShowCalendars}: DateRangePickerProps) {
+export default function DateRangePickerComponent({days, minDate, maxDate, maxDateIsToday, alwaysShowCalendars, showMonthYearDropdowns}: DateRangePickerProps) {
 
     const pickerRef = useRef<HTMLDivElement | null>(null);
     const pickerTextRef = useRef<HTMLElement | null>(null);
@@ -39,9 +41,11 @@ export default function DateRangePickerComponent({days, minDate, maxDate, always
         const parameters: Options = {
             startDate: start,
             endDate: end,
+            showDropdowns: true,
+            timePicker24Hour: true,
             ranges: {
                 'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 2 Weeks': [moment().subtract(13, 'days'), moment()],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
@@ -50,18 +54,20 @@ export default function DateRangePickerComponent({days, minDate, maxDate, always
             }
         };
 
-        if (alwaysShowCalendars != null) {
+        if (alwaysShowCalendars != null && alwaysShowCalendars) {
             parameters.alwaysShowCalendars = alwaysShowCalendars;
-        } else {
-            parameters.alwaysShowCalendars = false;
-            console.log("No calendars")
         }
 
         if (minDate != null) {
             parameters.minDate = minDate;
         }
-        if (maxDate != null) {
+        if (maxDateIsToday != null && maxDateIsToday) {
+            parameters.maxDate = moment();
+        } else if (maxDate != null) {
             parameters.maxDate = maxDate;
+        }
+        if (showMonthYearDropdowns != null && showMonthYearDropdowns) {
+            parameters.showDropdowns = showMonthYearDropdowns;
         }
 
         new daterangepicker(pickerRef.current!, parameters, showRange);

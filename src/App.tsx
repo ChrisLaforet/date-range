@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="App">
         <header className="App-header">
-            <DateRangePickerComponent days={7} maxDate={"October 31, 2024"} />
+            <DateRangePickerComponent days={7} maxDateIsToday={true} showMonthYearDropdowns={true} alwaysShowCalendars={true} />
             <img src={logo} className="App-logo" alt="logo"/>
             <p>
                 Edit <code>src/App.tsx</code> and save to reload.
