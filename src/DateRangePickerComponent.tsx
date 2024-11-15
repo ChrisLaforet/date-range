@@ -10,11 +10,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface DateRangePickerProps {
-   startDate: string;
-   endDate: string;
+   days: number | null;
 }
 
-export default function DateRangePickerComponent({startDate, endDate}: DateRangePickerProps) {
+export default function DateRangePickerComponent({days}: DateRangePickerProps) {
 
     const pickerRef = useRef<HTMLDivElement | null>(null);
     const pickerTextRef = useRef<HTMLElement | null>(null);
@@ -23,18 +22,12 @@ export default function DateRangePickerComponent({startDate, endDate}: DateRange
         pickerTextRef.current!.innerText = start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY');
     }
 
-    const showDefaultRange = () => {
-        const start = moment().subtract(29, 'days');
-        const end = moment();
-        showRange(start, end);
-    };
-
     useEffect(() => {
         if (pickerRef.current == null) {
             console.log("NOTHING");
             return;
         }
-        const start = moment().subtract(29, 'days');
+        const start = moment().subtract(days != null ? days : 7, 'days');
         const end = moment();
 
         new daterangepicker(
@@ -46,18 +39,21 @@ export default function DateRangePickerComponent({startDate, endDate}: DateRange
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 2 Weeks': [moment().subtract(13, 'days'), moment()],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last Quarter': [moment().subtract(1, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')]
                 }
             }, showRange);
 
-        showDefaultRange();
+        showRange(start, end);
     }, []);
 
     return (
         <div ref={pickerRef}
-             style={{width: '26rem', color: 'black', background: '#fff', cursor: 'pointer', padding: '5px 10px', border: '1px solid #ccc'}}>
+             className="date-range-picker"
+             // style={{width: '26rem', color: 'black', background: '#fff', cursor: 'pointer', padding: '5px 10px', border: '1px solid #ccc'}}
+        >
             <FontAwesomeIcon icon={faCalendar} />&nbsp;
             <span ref={pickerTextRef}></span>
             &nbsp;<FontAwesomeIcon icon={faCaretDown} />
