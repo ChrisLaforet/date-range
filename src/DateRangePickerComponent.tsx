@@ -36,7 +36,7 @@ export default function DateRangePickerComponent({days, minDate, maxDate, maxDat
 
     useEffect(() => {
         if (pickerRef.current == null) {
-            console.log("NOTHING");
+            console.log("No pickerRef - invalid condition");
             return;
         }
         const start = moment().subtract(days != null ? days : 7, 'days');
