@@ -9,6 +9,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
+// Reference is at: https://www.daterangepicker.com/
+
 interface DateRangePickerProps {
    days: number | null;
 }
