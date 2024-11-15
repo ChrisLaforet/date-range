@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import 'daterangepicker';
 import 'daterangepicker/daterangepicker.css'
 import moment from 'moment';
 import daterangepicker, { Options } from 'daterangepicker';
@@ -11,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 // Reference is at: https://www.daterangepicker.com/
+//
+// npm i daterangepicker
+// npm i --save-dev @types/daterangepicker
 
 interface DateRangePickerProps {
    days?: number;
@@ -19,15 +21,17 @@ interface DateRangePickerProps {
    maxDateIsToday: boolean;
    alwaysShowCalendars?: boolean;
    showMonthYearDropdowns?: boolean;
+   onDateRangeChange: (start: string, end: string) => void;
 }
 
-export default function DateRangePickerComponent({days, minDate, maxDate, maxDateIsToday, alwaysShowCalendars, showMonthYearDropdowns}: DateRangePickerProps) {
+export default function DateRangePickerComponent({days, minDate, maxDate, maxDateIsToday, alwaysShowCalendars, showMonthYearDropdowns, onDateRangeChange}: DateRangePickerProps) {
 
     const pickerRef = useRef<HTMLDivElement | null>(null);
     const pickerTextRef = useRef<HTMLElement | null>(null);
 
-    const showRange = (start: any, end: any): void  => {
+    const showRange = (start: moment.Moment, end: moment.Moment): void  => {
         pickerTextRef.current!.textContent = start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY');
+        onDateRangeChange(start.format("YYYY-MM-DD"), end.format("YYYY-MM-DD"));
     }
 
     useEffect(() => {
