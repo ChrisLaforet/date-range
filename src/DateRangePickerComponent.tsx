@@ -60,6 +60,8 @@ export default function DateRangePickerComponent({days, minDate, maxDate, maxDat
 
         if (alwaysShowCalendars != null && alwaysShowCalendars) {
             parameters.alwaysShowCalendars = alwaysShowCalendars;
+        } else {
+            parameters.alwaysShowCalendars = false;
         }
 
         if (minDate != null) {
@@ -72,6 +74,8 @@ export default function DateRangePickerComponent({days, minDate, maxDate, maxDat
         }
         if (showMonthYearDropdowns != null && showMonthYearDropdowns) {
             parameters.showDropdowns = showMonthYearDropdowns;
+        } else {
+            parameters.showDropdowns = false;
         }
 
         new daterangepicker(pickerRef.current!, parameters, showRange);
