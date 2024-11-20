@@ -8,12 +8,13 @@ import addMonths from 'date-fns/addMonths';
 import type { RangeType } from 'rsuite/esm/DateRangePicker/types';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import { DateRange } from 'rsuite/cjs/DateRangePicker';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // first: npm install rsuite
 // add to app: import 'rsuite/dist/rsuite-no-reset.min.css';
 
 interface DateRangeSelectorProps {
+    id: string;
     choiceEndsToday?: boolean;
     showToday?: boolean;
     showThisWeek?: boolean;
@@ -30,18 +31,48 @@ interface DateRangeSelectorProps {
     onDateRangeChange: (start: string, end: string) => void;
 }
 
-export default function DateRangeSelector({showToday, showThisWeek, showLast7Days, showLast14Days, showThisMonth, showLast30Days,
+export default function DateRangeSelector({id, showToday, showThisWeek, showLast7Days, showLast14Days, showThisMonth, showLast30Days,
                                               showLastMonth, showLast3Months, showLast6Months, showThisYear, showLast2Years,
                                               choiceEndsToday, placeHolderPrompt, onDateRangeChange}: DateRangeSelectorProps) {
 
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+
     function handleDateRangeChange(value: DateRange | null) {
-        if (value == null) {
+        if (value == null || value[0] == null || value[1] == null) {
             return;
         }
-        const start = formatDate(value[0]);
-        const end = formatDate(value[1]);
-//console.log(start + " and " + end);
-        onDateRangeChange(start, end);
+        const start = value[0];
+        const end = value[1];
+        if (!isDateAllowed(start) || !isDateAllowed(end)) {
+            return;
+        }
+
+        setStartDate(start);
+        setEndDate(end);
+    }
+
+    function handleExit() {
+        // if (startDate == null) {
+        //     alert("Bad dates 1")
+        // } else if (endDate == null) {
+        //     alert("Bad dates 2")
+        // } else if (startDate > endDate) {
+        //     alert("Dates are backwards")
+        // }
+    }
+
+    function handleExiting() {
+        // const inputElement = document.getElementById(id) as HTMLInputElement;
+        // if (inputElement) {
+        //     alert("Got reference")
+        //     inputElement.value = "10/01/2024 - 11/20/2024";
+        //     //inputElement.innerText = "10/01/2024 - 11/20/2024";
+        // }
+
+        if (startDate != null && endDate != null) {
+            onDateRangeChange(formatDate(startDate), formatDate(endDate));
+        }
     }
 
     function formatDate(value: Date): string {
@@ -133,19 +164,23 @@ export default function DateRangeSelector({showToday, showThisWeek, showLast7Day
         return ranges;
     }
 
-    function shouldDisableDate(date: Date): boolean {
+    function isDateAllowed(date: Date): boolean {
         const now = new Date();
         if (date.getFullYear() > now.getFullYear()) {
             return true;
-        } else if (date.getFullYear() == now.getFullYear()) {
+        } else if (date.getFullYear() === now.getFullYear()) {
             if (date.getMonth() > now.getMonth()) {
                 return true;
-            } else if (date.getMonth() == now.getMonth() && date.getDate() > now.getDate()) {
+            } else if (date.getMonth() === now.getMonth() && date.getDate() > now.getDate()) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    function shouldDisableDate(date: Date): boolean {
+        return isDateAllowed(date);
     }
 
     function getDynamicProps(): DateRangePickerProps {
@@ -163,14 +198,16 @@ export default function DateRangeSelector({showToday, showThisWeek, showLast7Day
 
     return (
         <DateRangePicker
+            id={id}
             {...getDynamicProps()}
             ranges={prepareRanges()}
             //placeholder="Enter range"
             style={{ width: 300 }}
             format={'MM/dd/yyyy'}
             character={" - "}
+            onExit={handleExit}
+            onExiting={handleExiting}
             onChange={handleDateRangeChange}
-
         />
     );
 }
