@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // first: npm install rsuite
 // add to app: import 'rsuite/dist/rsuite-no-reset.min.css';
+// documentation: https://rsuitejs.com/components/date-range-picker/#aria-properties
 
 interface DateRangeSelectorProps {
     id: string;
