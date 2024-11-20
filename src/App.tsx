@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import DateRangePickerComponent from './DateRangePickerComponent';
+import DateRangeSelector from './DateRangeSelector';
 
 function App() {
 
@@ -22,6 +23,8 @@ function App() {
   return (
     <div className="App">
         <header className="App-header">
+            <DateRangeSelector showToday={true} showThisWeek={true} showThisMonth={true} showLastMonth={true} showThisYear={true} onDateRangeChange={onDateRangeChange} />
+
             <DateRangePickerComponent
                 onDateRangeChange={onDateRangeChange}
                 days={7}
