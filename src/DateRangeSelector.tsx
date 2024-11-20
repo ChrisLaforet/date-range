@@ -1,16 +1,20 @@
-import { DateRangePicker } from 'rsuite';
+import { DateRangePicker, DateRangePickerProps } from 'rsuite';
 import subDays from 'date-fns/subDays';
 import startOfWeek from 'date-fns/startOfWeek';
 import endOfWeek from 'date-fns/endOfWeek';
-import addDays from 'date-fns/addDays';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
 import addMonths from 'date-fns/addMonths';
 import type { RangeType } from 'rsuite/esm/DateRangePicker/types';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import { DateRange } from 'rsuite/cjs/DateRangePicker';
+import { useEffect } from 'react';
+
+// first: npm install rsuite
+// add to app: import 'rsuite/dist/rsuite-no-reset.min.css';
 
 interface DateRangeSelectorProps {
+    choiceEndsToday?: boolean;
     showToday?: boolean;
     showThisWeek?: boolean;
     showLast7Days?: boolean;
@@ -22,12 +26,13 @@ interface DateRangeSelectorProps {
     showLast6Months?: boolean;
     showThisYear?: boolean;
     showLast2Years?: boolean;
+    placeHolderPrompt?: string;
     onDateRangeChange: (start: string, end: string) => void;
 }
 
 export default function DateRangeSelector({showToday, showThisWeek, showLast7Days, showLast14Days, showThisMonth, showLast30Days,
                                               showLastMonth, showLast3Months, showLast6Months, showThisYear, showLast2Years,
-                                              onDateRangeChange}: DateRangeSelectorProps) {
+                                              choiceEndsToday, placeHolderPrompt, onDateRangeChange}: DateRangeSelectorProps) {
 
     function handleDateRangeChange(value: DateRange | null) {
         if (value == null) {
@@ -35,7 +40,7 @@ export default function DateRangeSelector({showToday, showThisWeek, showLast7Day
         }
         const start = formatDate(value[0]);
         const end = formatDate(value[1]);
-console.log(start + " and " + end);
+//console.log(start + " and " + end);
         onDateRangeChange(start, end);
     }
 
@@ -128,17 +133,44 @@ console.log(start + " and " + end);
         return ranges;
     }
 
+    function shouldDisableDate(date: Date): boolean {
+        const now = new Date();
+        if (date.getFullYear() > now.getFullYear()) {
+            return true;
+        } else if (date.getFullYear() == now.getFullYear()) {
+            if (date.getMonth() > now.getMonth()) {
+                return true;
+            } else if (date.getMonth() == now.getMonth() && date.getDate() > now.getDate()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function getDynamicProps(): DateRangePickerProps {
+        const props: DateRangePickerProps = {};
+
+        if (choiceEndsToday) {
+            props["shouldDisableDate"] = shouldDisableDate
+        }
+        if (placeHolderPrompt != null && placeHolderPrompt.length > 0) {
+            props["placeholder"] = placeHolderPrompt;
+        }
+        console.log(props)
+        return props;
+    }
+
     return (
         <DateRangePicker
+            {...getDynamicProps()}
             ranges={prepareRanges()}
-            placeholder="Enter range"
+            //placeholder="Enter range"
             style={{ width: 300 }}
             format={'MM/dd/yyyy'}
             character={" - "}
             onChange={handleDateRangeChange}
-            // onShortcutClick={(shortcut, event) => {
-            //     console.log(shortcut);
-            // }}
+
         />
     );
 }

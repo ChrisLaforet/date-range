@@ -23,7 +23,9 @@ function App() {
   return (
     <div className="App">
         <header className="App-header">
-            <DateRangeSelector showToday={true} showThisWeek={true} showThisMonth={true} showLastMonth={true} showThisYear={true} onDateRangeChange={onDateRangeChange} />
+            <DateRangeSelector showToday={true} showThisWeek={true} showThisMonth={true} showLastMonth={true}
+                               showThisYear={true} choiceEndsToday={true} placeHolderPrompt="Please select range"
+                               onDateRangeChange={onDateRangeChange} />
 
             <DateRangePickerComponent
                 onDateRangeChange={onDateRangeChange}
