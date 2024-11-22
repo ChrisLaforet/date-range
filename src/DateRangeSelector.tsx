@@ -8,7 +8,7 @@ import addMonths from 'date-fns/addMonths';
 import type { RangeType } from 'rsuite/esm/DateRangePicker/types';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import { DateRange } from 'rsuite/cjs/DateRangePicker';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 // first: npm install rsuite
 // add to app: import 'rsuite/dist/rsuite-no-reset.min.css';
@@ -29,7 +29,7 @@ interface DateRangeSelectorProps {
     showThisYear?: boolean;
     showLast2Years?: boolean;
     placeHolderPrompt?: string;
-    setRangeToPreset?: string;
+    setRangeToPreset?: string | DateRange;
     onDateRangeChange: (start: string, end: string) => void;
 }
 
@@ -230,6 +230,7 @@ export default function DateRangeSelector({id, showToday, showThisWeek, showLast
         }
         if (range != null) {
             props["value"] = range;
+            onDateRangeChange(formatDate(range[0]), formatDate(range[1]));
         }
     }
 
@@ -243,7 +244,12 @@ export default function DateRangeSelector({id, showToday, showThisWeek, showLast
             props["placeholder"] = placeHolderPrompt;
         }
         if (setRangeToPreset != null) {
-            prepareRangeProps(setRangeToPreset, props);
+            if (typeof setRangeToPreset === "string") {
+                prepareRangeProps(setRangeToPreset, props);
+            } else {
+                props["value"] = setRangeToPreset;
+                onDateRangeChange(formatDate(setRangeToPreset[0]), formatDate(setRangeToPreset[1]));
+            }
         }
 //console.log(props)
         return props;

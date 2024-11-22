@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import DateRangePickerComponent from './DateRangePickerComponent';
 import DateRangeSelector from './DateRangeSelector';
+import subDays from 'date-fns/subDays';
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
             <DateRangeSelector id="tester" showToday={true} showThisWeek={true} showThisMonth={true} showLastMonth={true}
                                showThisYear={true} choiceEndsToday={true} placeHolderPrompt="Please select range"
                                onDateRangeChange={onDateRangeChange}
-                               setRangeToPreset="thisyear"
+                               // setRangeToPreset="thisyear"
+                               setRangeToPreset={[subDays(new Date(), 20), new Date()]}
             />
             <br />
             <DateRangePickerComponent
