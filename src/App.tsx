@@ -25,14 +25,17 @@ function App() {
         <header className="App-header">
             <DateRangeSelector id="tester" showToday={true} showThisWeek={true} showThisMonth={true} showLastMonth={true}
                                showThisYear={true} choiceEndsToday={true} placeHolderPrompt="Please select range"
-                               onDateRangeChange={onDateRangeChange} />
-
+                               onDateRangeChange={onDateRangeChange}
+                               setRangeToPreset="thisyear"
+            />
+            <br />
             <DateRangePickerComponent
                 onDateRangeChange={onDateRangeChange}
                 days={7}
                 maxDateIsToday={true}
                 showMonthYearDropdowns={true}
-                alwaysShowCalendars={true} />
+                alwaysShowCalendars={true}
+            />
             <img src={logo} className="App-logo" alt="logo"/>
             <p>
                 Edit <code>src/App.tsx</code> and save to reload.

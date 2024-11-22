@@ -29,12 +29,13 @@ interface DateRangeSelectorProps {
     showThisYear?: boolean;
     showLast2Years?: boolean;
     placeHolderPrompt?: string;
+    setRangeToPreset?: string;
     onDateRangeChange: (start: string, end: string) => void;
 }
 
 export default function DateRangeSelector({id, showToday, showThisWeek, showLast7Days, showLast14Days, showThisMonth, showLast30Days,
                                               showLastMonth, showLast3Months, showLast6Months, showThisYear, showLast2Years,
-                                              choiceEndsToday, placeHolderPrompt, onDateRangeChange}: DateRangeSelectorProps) {
+                                              choiceEndsToday, placeHolderPrompt, setRangeToPreset, onDateRangeChange}: DateRangeSelectorProps) {
 
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
@@ -184,6 +185,54 @@ export default function DateRangeSelector({id, showToday, showThisWeek, showLast
         return isDateAllowed(date);
     }
 
+    function prepareRangeProps(presetName: string, props: DateRangePickerProps) {
+        let range: DateRange | null = null;
+        switch (presetName.toUpperCase()) {
+            case "TODAY":
+                range = [new Date(), new Date()];
+                break;
+            case "THISWEEK":
+                let end = new Date();
+                if (endOfWeek(new Date()) <= end) {
+                    end = endOfWeek(new Date());
+                }
+                range = [startOfWeek(new Date()), end];
+                break;
+            case "LAST7DAYS":
+                range = [subDays(new Date(), 6), new Date()];
+                break;
+            case "LAST14DAYS":
+                range = [subDays(new Date(), 13), new Date()];
+                break;
+            case "THISMONTH":
+                range = [startOfMonth(new Date()), new Date()];
+                break;
+            case "LAST30DAYS":
+                range = [subDays(new Date(), 29), new Date()];
+                break;
+            case "LASTMONTH":
+                range = [startOfMonth(addMonths(new Date(), -1)), endOfMonth(addMonths(new Date(), -1))];
+                break;
+            case "LAST3MONTHS":
+                range = [startOfMonth(addMonths(new Date(), -3)), endOfMonth(addMonths(new Date(), -1))];
+                break;
+            case "LAST6MONTHS":
+                range = [startOfMonth(addMonths(new Date(), -6)), endOfMonth(addMonths(new Date(), -1))];
+                break;
+            case "THISYEAR":
+                range = [new Date(new Date().getFullYear(), 0, 1), new Date()];
+                break;
+            case "LAST2YEARS":
+                range = [new Date(new Date().getFullYear() - 2, 0, 1), new Date()];
+                break;
+            default:
+                console.log(`Invalid setRangeToPreset (${presetName} being passed to DateRangeSelector`)
+        }
+        if (range != null) {
+            props["value"] = range;
+        }
+    }
+
     function getDynamicProps(): DateRangePickerProps {
         const props: DateRangePickerProps = {};
 
@@ -193,7 +242,10 @@ export default function DateRangeSelector({id, showToday, showThisWeek, showLast
         if (placeHolderPrompt != null && placeHolderPrompt.length > 0) {
             props["placeholder"] = placeHolderPrompt;
         }
-        console.log(props)
+        if (setRangeToPreset != null) {
+            prepareRangeProps(setRangeToPreset, props);
+        }
+//console.log(props)
         return props;
     }
 
