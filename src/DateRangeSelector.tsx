@@ -169,20 +169,20 @@ export default function DateRangeSelector({id, showToday, showThisWeek, showLast
     function isDateAllowed(date: Date): boolean {
         const now = new Date();
         if (date.getFullYear() > now.getFullYear()) {
-            return true;
-        } else if (date.getFullYear() === now.getFullYear()) {
+            return false;
+        } else if (date.getFullYear() == now.getFullYear()) {
             if (date.getMonth() > now.getMonth()) {
-                return true;
-            } else if (date.getMonth() === now.getMonth() && date.getDate() > now.getDate()) {
-                return true;
+                return false;
+            } else if (date.getMonth() == now.getMonth() && date.getDate() > now.getDate()) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     function shouldDisableDate(date: Date): boolean {
-        return isDateAllowed(date);
+        return !isDateAllowed(date);
     }
 
     function prepareRangeProps(presetName: string, props: DateRangePickerProps) {
